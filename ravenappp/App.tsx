@@ -5,7 +5,7 @@
  * @format
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
@@ -16,6 +16,17 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+import {PermissionsAndroid} from 'react-native';
+
+import SmsAndroid from 'react-native-get-sms-android';
+
+/* List SMS messages matching the filter */
+var filter = {
+  box: 'inbox', // 'inbox' (default), 'sent', 'draft', 'outbox', 'failed', 'queued', and '' for all
+  /** the next 2 filters can be used for pagination **/
+  indexFrom: 0, // start from index 0
+  maxCount: 10, // count of SMS to return each time
+};
 
 import {
   Colors,
@@ -29,7 +40,49 @@ type SectionProps = PropsWithChildren<{
   title: string;
 }>;
 
+async function requestSmsPermission() {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.READ_SMS,
+      {
+        title: 'App SMS Permission',
+        message: 'This app needs access to read your SMS messages.',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('SMS permission granted');
+    } else {
+      console.log('SMS permission denied');
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+}
+
 function Section({children, title}: SectionProps): React.JSX.Element {
+  useEffect(() => {
+    requestSmsPermission();
+    SmsAndroid.list(
+      JSON.stringify(filter),
+      fail => {
+        console.log('Failed with this error: ' + fail);
+      },
+      (count, smsList) => {
+        console.log('Count: ', count);
+        console.log('List: ', smsList);
+        var arr = JSON.parse(smsList);
+
+        arr.forEach(function (object) {
+          console.log('Object: ' + object);
+          console.log('-->' + object.date);
+          console.log('-->' + object.body);
+        });
+      },
+    );
+  }, []);
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.sectionContainer}>
@@ -62,6 +115,7 @@ function App(): React.JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  console.log('where will this land');
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar
@@ -76,10 +130,7 @@ function App(): React.JSX.Element {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
+          <Section title="Step One">check this out fuckheads</Section>
           <Section title="See Your Changes">
             <ReloadInstructions />
           </Section>
