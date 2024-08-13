@@ -8,6 +8,7 @@
 import React, {useEffect} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -28,6 +29,7 @@ var filter = {
   maxCount: 10, // count of SMS to return each time
 };
 
+// how to use the library
 import {
   Colors,
   DebugInstructions,
@@ -41,6 +43,7 @@ type SectionProps = PropsWithChildren<{
 }>;
 
 async function requestSmsPermission() {
+  console.log('requesting sms permission');
   try {
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.READ_SMS,
@@ -64,6 +67,7 @@ async function requestSmsPermission() {
 
 function Section({children, title}: SectionProps): React.JSX.Element {
   useEffect(() => {
+    console.log('requesting sms permission');
     requestSmsPermission();
     SmsAndroid.list(
       JSON.stringify(filter),
@@ -116,6 +120,7 @@ function App(): React.JSX.Element {
   };
 
   console.log('where will this land');
+  console.log('auto reloading is enabled yes');
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar
@@ -130,18 +135,11 @@ function App(): React.JSX.Element {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title="Step One">check this out fuckheads</Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+          <Section title="Step One - chicklit">check this out fuckheads what now ,si</Section>          
+          <Text>again getting into the weeds here with only displaying the most functional info possible...</Text>
         </View>
+        <Button title="Sync Messages from the server" />
+        <Button title="Read Messages from the Server" />
       </ScrollView>
     </SafeAreaView>
   );

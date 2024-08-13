@@ -4,6 +4,7 @@
   <uses-permission android:name="android.permission.READ_SMS" />
   <uses-permission android:name="android.permission.WRITE_SMS" />
   <uses-permission android:name="android.permission.SEND_SMS" />
+   <uses-permission android:name="android.permission.RECEIVE_SMS" />    
 
   <application
     android:name=".MainApplication"
@@ -12,6 +13,7 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:allowBackup="false"
     android:theme="@style/AppTheme">
+    <service android:name=".SmsBackgroundService" />
     <activity
       android:name=".MainActivity"
       android:label="@string/app_name"
