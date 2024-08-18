@@ -7,12 +7,11 @@ import ReadScreen from './modules/ReadScreen';
 import HomeScreen from './modules/HomeScreen';
 import {PermissionsAndroid} from 'react-native';
 
-const sleep = time => new Promise(resolve => setTimeout(() => resolve(), time));
-
 const serverUrl = 'http://localhost:5200';
 
 const backgroundService = async () => {
   console.log('running background service');
+
   await new Promise(async resolve => {
     console.log('running the prmise in background service');
     let subscription = SmsListener.addListener(
@@ -70,7 +69,7 @@ async function requestSmsPermissions() {
       PermissionsAndroid.PERMISSIONS.RECEIVE_SMS,
       PermissionsAndroid.PERMISSIONS.READ_SMS,
     ]);
-
+    console.log('grated', granted);
     if (
       granted[PermissionsAndroid.PERMISSIONS.RECEIVE_SMS] ===
         PermissionsAndroid.RESULTS.GRANTED &&
@@ -78,19 +77,24 @@ async function requestSmsPermissions() {
         PermissionsAndroid.RESULTS.GRANTED
     ) {
       console.log('You can receive and read SMS messages');
+      return true;
     } else {
       console.log('SMS permissions denied');
+      return false;
     }
   } catch (err) {
     console.warn(err);
+    return false;
   }
 }
 
 function App(): React.JSX.Element {
   useEffect(() => {
     const checkPermits = async () => {
-      requestSmsPermissions();
-      BackgroundService.start(backgroundService, options);
+      const granted = await requestSmsPermissions();
+      if (granted) {
+        BackgroundService.start(backgroundService, options);
+      }
     };
 
     checkPermits();
