@@ -23,6 +23,7 @@ app.get('/health-check', (req, res) => {
 
 // POST route to add or update device messages
 app.post('/messages', async (req, res) => {
+  console.log("request recieved in /messages");
   try {
     const { deviceName, messages } = req.body;
 
